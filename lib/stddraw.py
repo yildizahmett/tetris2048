@@ -160,10 +160,10 @@ def setCanvasSize(w=_DEFAULT_CANVAS_SIZE, h=_DEFAULT_CANVAS_SIZE):
     _canvasWidth = w
     _canvasHeight = h
     _background = pygame.display.set_mode([w, h])
-    pygame.display.set_caption('stddraw window (r-click to save)')
+    pygame.display.set_caption('Tetris-2048')
     _surface = pygame.Surface((w, h))
     _surface.fill(_pygameColor(WHITE))
-    _windowCreated = True
+    # _windowCreated = True
 
 def setXscale(min=_DEFAULT_XMIN, max=_DEFAULT_XMAX):
     """
@@ -233,10 +233,11 @@ def setFontSize(s=_DEFAULT_FONT_SIZE):
 #-----------------------------------------------------------------------
 
 def _makeSureWindowCreated():
-    global _windowCreated
+    pass
+    """global _windowCreated
     if not _windowCreated:
         setCanvasSize()
-        _windowCreated = True
+        _windowCreated = True"""
 
 #-----------------------------------------------------------------------
 
