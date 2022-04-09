@@ -238,7 +238,6 @@ def prepare_screen():
          elif ((mouse_x >= 375-75/2 and mouse_x <= 375-75/2 + 40) and (mouse_y >= (320) and mouse_y <= (320) + 40)): gameSpeed = 150; game_type = "hard";   return gameSpeed, tuple(gridResults), game_type
          elif ((mouse_y >= (450) - 15 and mouse_y <= (450) + 20)  and (mouse_x >= 280-300/2 and mouse_x <= 280-300/2 + 300)) : gridDimensions[0] = (mouse_x); gridResults[0] = pixelToCoordinate(mouse_x,130,430,8,20 )
          elif ((mouse_y >= (400) - 15 and mouse_y <= (400) + 20   and (mouse_x >= 280-300/2 and mouse_x <= 280-300/2 + 300))): gridDimensions[1] = (mouse_x); gridResults[1] = pixelToCoordinate(mouse_x,130,430,16,24)
-
 # Function for displaying the game over screen
 def game_over_screen(grid_h, game_w, current_score):
    # colors used for the menu
@@ -259,7 +258,7 @@ def game_over_screen(grid_h, game_w, current_score):
    stddraw.picture(image_to_display, img_center_x, img_center_y)
    # dimensions of the start game button
    button_w, button_h = game_w - 6, 1.5
-   # coordinates of the bottom left corner of the start game button 
+   # coordinates of the bottom left corner of the start game button
    button_blc_x, button_blc_y = img_center_x - button_w / 2, 2.75
    # display game over text
    stddraw.setPenColor(button_color)
@@ -296,16 +295,16 @@ def game_over_screen(grid_h, game_w, current_score):
       stddraw.show(50)
       # check if the mouse has been left-clicked on the button
       if stddraw.mousePressed():
-         # get the x and y coordinates of the location at which the mouse has 
-         # most recently been left-clicked  
+         # get the x and y coordinates of the location at which the mouse has
+         # most recently been left-clicked
          mouse_x, mouse_y = stddraw.mouseX(), stddraw.mouseY()
          # check if these coordinates are inside the button
          if mouse_x >= button_blc_x and mouse_x <= button_blc_x + button_w:
-            if mouse_y >= button_blc_y and mouse_y <= button_blc_y + button_h: 
+            if mouse_y >= button_blc_y and mouse_y <= button_blc_y + button_h:
                return True # return True to indicate that the game should be restarted
-         
+
          if mouse_x >= button_blc_x and mouse_x <= button_blc_x + button_w:
-            if mouse_y >= button_blc_y - 2 and mouse_y <= button_blc_y - 2 + button_h: 
+            if mouse_y >= button_blc_y - 2 and mouse_y <= button_blc_y - 2 + button_h:
                return False # return False to indicate that the game should be returned to the main menu
 
 # Function for displaying the stop game screen
@@ -328,7 +327,7 @@ def stop_screen(grid_h, game_w, current_score):
    stddraw.picture(image_to_display, img_center_x, img_center_y)
    # dimensions of the start game button
    button_w, button_h = game_w - 6, 1.5
-   # coordinates of the bottom left corner of the start game button 
+   # coordinates of the bottom left corner of the start game button
    button_blc_x, button_blc_y = img_center_x - button_w / 2, 2.75
    # display game over text
    stddraw.setPenColor(button_color)
@@ -355,12 +354,12 @@ def stop_screen(grid_h, game_w, current_score):
       stddraw.show(50)
       # check if the mouse has been left-clicked on the button
       if stddraw.mousePressed():
-         # get the x and y coordinates of the location at which the mouse has 
-         # most recently been left-clicked  
+         # get the x and y coordinates of the location at which the mouse has
+         # most recently been left-clicked
          mouse_x, mouse_y = stddraw.mouseX(), stddraw.mouseY()
          # check if these coordinates are inside the button
          if mouse_x >= button_blc_x and mouse_x <= button_blc_x + button_w:
-            if mouse_y >= button_blc_y and mouse_y <= button_blc_y + button_h: 
+            if mouse_y >= button_blc_y and mouse_y <= button_blc_y + button_h:
                return True # return True to indicate that the game should be restarted
 
 # Function for save best score
@@ -420,7 +419,13 @@ def read_best_score():
    else:
       return 0
 
-# start() function is specified as the entry point (main function) from which 
+# function that saves the canvas screen as png file to user's desktop
+def saveToDesktop() :
+    desktopPath = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
+    stddraw.save(desktopPath+"\ScreenShot.png")
+    print("Saving as ->",(desktopPath+"\ScreenShot.png"))
+
+# start() function is specified as the entry point (main function) from which
 # the program starts execution
 if __name__== '__main__':
    start()
