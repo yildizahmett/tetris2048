@@ -36,12 +36,14 @@ def start():
    stddraw.setXscale(-0.5, game_w - 0.5)
    stddraw.setYscale(-0.5, grid_h - 0.5)
 
+   # read the best score from the file
+   best_score = read_best_score()
    # set the dimension values stored and used in the Tetromino class
    Tetromino.grid_height = grid_h
    Tetromino.grid_width = grid_w
    # create the game grid
    grid = GameGrid(grid_h, grid_w, info_w, game_speed, best_score, game_type)
-   # create the first tetromino to enter the game grid
+   # create the first tetromino to enter the game grid 
    # by using the create_tetromino function defined below
    current_tetromino = create_tetromino(grid_h, grid_w)
    grid.current_tetromino = current_tetromino
@@ -49,7 +51,7 @@ def start():
    # by using the create_tetromino function defined below
    next_tetromino = create_tetromino(grid_h, grid_w)
    grid.next_tetromino = next_tetromino
-   # the main game loop (keyboard interaction for moving the tetromino)
+   # the main game loop (keyboard interaction for moving the tetromino) 
    while True:
       # check user interactions via the keyboard
       if stddraw.hasNextKeyTyped():  # check if the user has pressed a key
@@ -57,14 +59,14 @@ def start():
          # if the left arrow key has been pressed
          if key_typed == "left":
             # move the active tetromino left by one
-            current_tetromino.move(key_typed, grid)
+            current_tetromino.move(key_typed, grid) 
          # if the right arrow key has been pressed
          elif key_typed == "right":
             # move the active tetromino right by one
             current_tetromino.move(key_typed, grid)
          # if the down arrow key has been pressed
          elif key_typed == "down":
-            # move the active tetromino down by one
+            # move the active tetromino down by one 
             # (soft drop: causes the tetromino to fall down faster)
             current_tetromino.move(key_typed, grid)
          elif key_typed == "d":
@@ -95,8 +97,10 @@ def start():
          game_over = grid.game_over
          # game over menu
          if game_over:
+            save_best_score(grid.score)
             is_restarted = game_over_screen(grid_h, game_w, grid.score)
             if is_restarted:
+               best_score = read_best_score()
                grid = GameGrid(grid_h, grid_w, info_w, game_speed, best_score, game_type)
             else:
                start() # returns the main menu
@@ -110,11 +114,12 @@ def start():
          next_tetromino = create_tetromino(grid_h, grid_w)
          grid.next_tetromino = next_tetromino
 
-      # display the game grid and the current tetromino
+      # display the game grid and the current tetromino      
       grid.display()
       # if stop game button is pressed, displyas the game over screen
       game_over = grid.game_over
       if game_over:
+         save_best_score(grid.score)
          is_returned = stop_screen(grid_h, game_w, grid.score)
          if is_returned:
             start()
@@ -391,6 +396,62 @@ def stop_screen(grid_h, game_w, current_score):
             if mouse_y >= button_blc_y and mouse_y <= button_blc_y + button_h:
                return True # return True to indicate that the game should be restarted
 
+# Function for save best score
+def save_best_score(best_score):
+   # if the best score is already saved in the binary file :)
+   # then the best score is updated
+   if os.path.exists("best_score.bin"):
+      with open("best_score.bin", "rb") as file:
+         # read the best score from the binary file
+         bit_string = ""
+         byte = file.read(1)
+         while len(byte) > 0:
+            byte = ord(byte)
+            bits = bin(byte)[2:].rjust(8, '0')
+            bit_string += bits
+            byte = file.read(1)
+         old_score = int(bit_string, 2)
+         # if the new score is greater than the old score
+         # then the new score is saved in the binary file
+         if best_score > old_score:
+            with open("best_score.bin", "wb") as file:
+               best_score_bits = "{0:032b}".format(best_score)
+               b = bytearray()
+               for i in range(0, len(best_score_bits), 8):
+                  one_byte = best_score_bits[i:i+8]
+                  b.append(int(one_byte, 2))
+               file.write(bytes(b))
+   # if the best score is not saved yet
+   # then saave the current score as best score
+   else:
+      # write the best score to the binary file
+      with open("best_score.bin", "wb") as file:
+         best_score_bits = "{0:032b}".format(best_score)
+         b = bytearray()
+         for i in range(0, len(best_score_bits), 8):
+            one_byte = best_score_bits[i:i+8]
+            b.append(int(one_byte, 2))
+         file.write(bytes(b))
+
+# read the best score from the binary file
+def read_best_score():
+   # if the best score is already saved in the binary file :)
+   # read the best score from the binary file and return it
+   # if the best score is not saved yet, return 0
+   if os.path.exists("best_score.bin"):
+      with open("best_score.bin", "rb") as file:
+         bit_string = ""
+         byte = file.read(1)
+         while len(byte) > 0:
+            byte = ord(byte)
+            bits = bin(byte)[2:].rjust(8, '0')
+            bit_string += bits
+            byte = file.read(1)
+
+         best_score = int(bit_string, 2)
+         return best_score
+   else:
+      return 0
 
 # start() function is specified as the entry point (main function) from which
 # the program starts execution
