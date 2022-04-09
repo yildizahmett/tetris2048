@@ -75,15 +75,37 @@ class Tile:
       else:
          return 0
 
-   # match the tiles if the number is equal
-   def merge_matches(self, tile):
-      # if the number on the tile is equal to the number on the current tile
-      if self.number == tile.number:
-         # set the number on the current tile to the sum of the two numbers
-         self.number *= 2
-         # set the number on the tile to None
-         tile.number = None
-         # return True to indicate that the tiles were matched
-         return True
-      # return False to indicate that the tiles were not matched
-      return False
+   # Merges tiles in the tile matrix.
+   def merge_tiles(tile_matrix, score):
+      # iterate through the tile matrix
+      for col in range(len(tile_matrix[0])):
+         for row in range(len(tile_matrix)):
+            try:
+               # if the tile to the top of the current tile is not empty
+               # and the number on the current tile is equal to the number
+               # on the tile to the top merge them
+               if tile_matrix[row][col] != None and tile_matrix[row + 1][col] != None and tile_matrix[row][col].number == tile_matrix[row + 1][col].number:
+                  score += tile_matrix[row][col].merge_matches(tile_matrix[row + 1][col])
+                  tile_matrix[row + 1][col] = None 
+                  # After merging the tiles, move the tiles down
+                  for row_index in range(row + 1, len(tile_matrix)):
+                     if tile_matrix[row_index][col] != None:
+                        tile_matrix[row_index - 1][col] = tile_matrix[row_index][col]
+                        tile_matrix[row_index][col] = None
+            except IndexError:
+               pass
+            # check neighboring tiles
+            right_neighbour = tile_matrix[row + 1][col]  == None if row + 1 < len(tile_matrix) else True
+            up_neighbour    = tile_matrix[row][col + 1]  == None if col + 1 < len(tile_matrix[0]) else True
+            left_neighbour  = tile_matrix[row - 1][col]  == None if row - 1 >= 0 else True
+            down_neighbour  = tile_matrix[row][col - 1]  == None if col - 1 >= 0 else True
+            # if the current tile is not empty and the neighbors are empty
+            # move the current tile to the any empty neighbor
+            # do not do in the first row 
+            if row != 0:
+               if tile_matrix[row][col] != None and right_neighbour and left_neighbour and up_neighbour and down_neighbour:
+                     tile_matrix[row - 1][col] = tile_matrix[row][col]
+                     tile_matrix[row][col] = None 
+                     row -= 1
+            row += 1
+      return score

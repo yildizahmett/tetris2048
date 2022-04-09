@@ -82,15 +82,26 @@ def start():
          # and the position of the bottom left cell in this matrix
          tiles, pos = grid.current_tetromino.get_min_bounded_tile_matrix(True)
          # update the game grid by locking the tiles of the landed tetromino
-         game_over = grid.update_grid(tiles, pos)
-         # end the main game loop if the game is over
+         grid.update_grid(tiles, pos)
+         game_over = grid.game_over
+         # game over menu
          if game_over:
-            break
-         # Check if the
-         # create the next tetromino to enter the game grid
+            save_best_score(grid.score)
+            is_restarted = game_over_screen(grid_h, game_w, grid.score)
+            if is_restarted:
+               best_score = read_best_score()
+               grid = GameGrid(grid_h, grid_w, info_w, game_speed, best_score, game_type)
+            else:
+               start() # returns the main menu
+         # check if any row is filled and clear this rows
+         grid.clear_tiles()
+         # assign the next tetromino to the current tetromino
          # by using the create_tetromino function defined below
-         current_tetromino = create_tetromino(grid_h, grid_w)
+         current_tetromino = next_tetromino
          grid.current_tetromino = current_tetromino
+         # create the next tetromino that will used the next time
+         next_tetromino = create_tetromino(grid_h, grid_w)
+         grid.next_tetromino = next_tetromino
 
       # display the game grid and the current tetromino
       grid.display()
@@ -245,6 +256,75 @@ def prepare_screen():
 
                if (gameSpeed != 0) :
                   return gameSpeed, tuple(gridResults), game_type
+
+# Function for displaying the game over screen
+def game_over_screen(grid_h, game_w, current_score):
+   # colors used for the menu
+   background_color = Color(42, 69, 99)
+   button_color = Color(25, 255, 228)
+   text_color = Color(31, 160, 239)
+   # clear the background canvas to background_color
+   stddraw.clear(background_color)
+   # get the directory in which this python code file is placed
+   current_dir = os.path.dirname(os.path.realpath(__file__))
+   # path of the image file
+   img_file = current_dir + "/images/menu_image.png"
+   # center coordinates to display the image
+   img_center_x, img_center_y = (game_w - 1) / 2, grid_h - 5
+   # image is represented using the Picture class
+   image_to_display = Picture(img_file)
+   # display the image
+   stddraw.picture(image_to_display, img_center_x, img_center_y)
+   # dimensions of the start game button
+   button_w, button_h = game_w - 6, 1.5
+   # coordinates of the bottom left corner of the start game button 
+   button_blc_x, button_blc_y = img_center_x - button_w / 2, 2.75
+   # display game over text
+   stddraw.setPenColor(button_color)
+   stddraw.setFontFamily("Arial")
+   stddraw.setFontSize(80)
+   game_over_text = "Game Over!"
+   stddraw.boldText(img_center_x, (button_blc_y + img_center_y) / 2, game_over_text)
+   # display the current score text
+   stddraw.setFontSize(40)
+   stddraw.text(img_center_x, (button_blc_y + img_center_y) / 2 - 1.5, "Your score: " + str(current_score))
+
+   # display the restart game button as a filled rectangle
+   stddraw.setPenColor(button_color)
+   stddraw.filledRectangle(button_blc_x, button_blc_y, button_w, button_h)
+   # display the text on the restart game button
+   stddraw.setFontFamily("Arial")
+   stddraw.setFontSize(25)
+   stddraw.setPenColor(text_color)
+   text_to_display = "Restart the Game"
+   stddraw.text(img_center_x, button_blc_y + 0.75, text_to_display)
+
+   # display the return main button as a filled rectangle
+   stddraw.setPenColor(button_color)
+   stddraw.filledRectangle(button_blc_x, button_blc_y - 2, button_w, button_h)
+   # display the text on the return menu button
+   stddraw.setFontFamily("Arial")
+   stddraw.setFontSize(25)
+   stddraw.setPenColor(text_color)
+   text_to_display = "Return to Main Menu"
+   stddraw.text(img_center_x, button_blc_y - 1.25, text_to_display)
+   # menu interaction loop
+   while True:
+      # display the menu and wait for a short time (50 ms)
+      stddraw.show(50)
+      # check if the mouse has been left-clicked on the button
+      if stddraw.mousePressed():
+         # get the x and y coordinates of the location at which the mouse has 
+         # most recently been left-clicked  
+         mouse_x, mouse_y = stddraw.mouseX(), stddraw.mouseY()
+         # check if these coordinates are inside the button
+         if mouse_x >= button_blc_x and mouse_x <= button_blc_x + button_w:
+            if mouse_y >= button_blc_y and mouse_y <= button_blc_y + button_h: 
+               return True # return True to indicate that the game should be restarted
+         
+         if mouse_x >= button_blc_x and mouse_x <= button_blc_x + button_w:
+            if mouse_y >= button_blc_y - 2 and mouse_y <= button_blc_y - 2 + button_h: 
+               return False # return False to indicate that the game should be returned to the main menu
 
 # start() function is specified as the entry point (main function) from which
 # the program starts execution
