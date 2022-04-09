@@ -33,10 +33,39 @@ class Tetromino:
       elif type == 'Z':
          n = 3  # n = number of rows = number of columns in the tile matrix
          # shape of the tetromino Z in its initial orientation
-         occupied_tiles.append((0, 1)) # (column_index, row_index) 
+         occupied_tiles.append((0, 0)) # (column_index, row_index) 
+         occupied_tiles.append((1, 0))
+         occupied_tiles.append((1, 1))
+         occupied_tiles.append((2, 1))
+      elif type == 'S':
+         n = 3 # n = number of rows = number of columns in the tile matrix
+         # shape of the tetromino S in its initial orientation
+         occupied_tiles.append((1, 0)) # (column_index, row_index)
+         occupied_tiles.append((2, 0))
+         occupied_tiles.append((1, 1))
+         occupied_tiles.append((0, 1))
+      elif type == 'J':
+         n = 3 # n = number of rows = number of columns in the tile matrix
+         # shape of the tetromino J in its initial orientation
+         occupied_tiles.append((1, 0)) # (column_index, row_index)
+         occupied_tiles.append((1, 1))
+         occupied_tiles.append((1, 2))
+         occupied_tiles.append((0, 2))
+      elif type == 'L':
+         n = 3 # n = number of rows = number of columns in the tile matrix
+         # shape of the tetromino L in its initial orientation
+         occupied_tiles.append((1, 0))
          occupied_tiles.append((1, 1))
          occupied_tiles.append((1, 2))
          occupied_tiles.append((2, 2))
+      elif type == 'T':
+         n = 3 # n = number of rows = number of columns in the tile matrix
+         # shape of the tetromino T in its initial orientation
+         occupied_tiles.append((0, 1))
+         occupied_tiles.append((1, 1))
+         occupied_tiles.append((2, 1))
+         occupied_tiles.append((1, 2))
+      
       # create a matrix of numbered tiles based on the shape of the tetromino
       self.tile_matrix = np.full((n, n), None)
       # create the four tiles (minos) of the tetromino and place these tiles
@@ -50,6 +79,7 @@ class Tetromino:
       self.bottom_left_cell = Point()
       self.bottom_left_cell.y = self.grid_height - 1
       self.bottom_left_cell.x = random.randint(0, self.grid_width - n)
+
 
    # Method that returns the position of the cell in the tile matrix specified 
    # by the given row and column indexes
@@ -125,6 +155,23 @@ class Tetromino:
          self.bottom_left_cell.y -= 1
       return True  # successful move in the given direction
    
+      # Rotate 90 degrees clockwise and counter clockwise the tetromino
+   def rotate_tetromino(self, direction, game_grid):
+      # check if the tetromino can be rotated in the given direction by using the
+      # can_be_rotated method defined below
+      if not(self.can_be_rotated(direction, game_grid)):
+         return False
+      # Rotate tetromino 90 degree # up = clockwise
+      if direction == "d":
+         # get the copy of the tile matrix and the position of the bottom left 
+         # cell in the copy
+         self.tile_matrix = np.rot90(self.tile_matrix, 3)
+      elif direction == "a":
+         # get the copy of the tile matrix and the position of the bottom left 
+         # cell in the copy
+         self.tile_matrix = np.rot90(self.tile_matrix, 1)
+      return True
+
    # Method to check if the tetromino can be moved in the given direction or not
    def can_be_moved(self, dir, game_grid):
       n = len(self.tile_matrix)  # n = number of rows = number of columns
@@ -163,6 +210,7 @@ class Tetromino:
                   if game_grid.is_occupied(rightmost.y, rightmost.x + 1):
                      return False
                   break  # end the inner for loop
+               # direction = up --> check the topmost tile of each column
       # direction = down --> check the bottommost tile of each column
       else:
          for col in range(n):
@@ -181,3 +229,27 @@ class Tetromino:
                      return False
                   break  # end the inner for loop
       return True  # tetromino can be moved in the given direction
+
+   # Method for checking if the tetromino can be rotated in the given direction
+   def can_be_rotated(self, dir, game_grid):
+      n = len(self.tile_matrix)  # n = number of rows = number of columns
+      # get the copy of the tile matrix
+      copy_of_tile_matrix = cp.copy(self.tile_matrix)
+      copy_of_tile_matrix = np.rot90(copy_of_tile_matrix, 1)
+
+      for row in range(n):
+         for col in range(n):
+            if dir == "d" and copy_of_tile_matrix[row][col] is not None:
+               # get the position of the tile
+               position = self.get_cell_position(row, col)
+               # check if the tile is inside the game grid
+               if position.y < 0 or position.x < 0 or position.x >= self.grid_width:
+                  return False
+
+            elif dir == "a" and copy_of_tile_matrix[row][col] is not None:
+               # get the position of the tile
+               position = self.get_cell_position(row, col)
+               # check if the tile is inside the game grid
+               if position.y < 0 or position.x < 0 or position.x >= self.grid_width:
+                  return False
+      return True
