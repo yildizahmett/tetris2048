@@ -127,7 +127,7 @@ def start():
 # Function for creating random shaped tetrominoes to enter the game grid
 def create_tetromino(grid_height, grid_width):
    # type (shape) of the tetromino is determined randomly
-   tetromino_types = [ 'I', 'O', 'Z' ]
+   tetromino_types = ["I", "J", "L", "O", "S", "T", "Z"]
    random_index = random.randint(0, len(tetromino_types) - 1)
    random_type = tetromino_types[random_index]
    # create and return the tetromino
@@ -178,7 +178,7 @@ def display_game_menu(grid_height, grid_width):
          if mouse_x >= button_blc_x and mouse_x <= button_blc_x + button_w:
             if mouse_y >= button_blc_y and mouse_y <= button_blc_y + button_h: 
                break # break the loop to end the method and start the game
-            
+
 # Function for displaying the preparing menu
 def prepare_screen():
 
@@ -292,7 +292,7 @@ def game_over_screen(grid_h, game_w, current_score):
    stddraw.picture(image_to_display, img_center_x, img_center_y)
    # dimensions of the start game button
    button_w, button_h = game_w - 6, 1.5
-   # coordinates of the bottom left corner of the start game button
+   # coordinates of the bottom left corner of the start game button 
    button_blc_x, button_blc_y = img_center_x - button_w / 2, 2.75
    # display game over text
    stddraw.setPenColor(button_color)
@@ -329,16 +329,16 @@ def game_over_screen(grid_h, game_w, current_score):
       stddraw.show(50)
       # check if the mouse has been left-clicked on the button
       if stddraw.mousePressed():
-         # get the x and y coordinates of the location at which the mouse has
-         # most recently been left-clicked
+         # get the x and y coordinates of the location at which the mouse has 
+         # most recently been left-clicked  
          mouse_x, mouse_y = stddraw.mouseX(), stddraw.mouseY()
          # check if these coordinates are inside the button
          if mouse_x >= button_blc_x and mouse_x <= button_blc_x + button_w:
-            if mouse_y >= button_blc_y and mouse_y <= button_blc_y + button_h:
+            if mouse_y >= button_blc_y and mouse_y <= button_blc_y + button_h: 
                return True # return True to indicate that the game should be restarted
-
+         
          if mouse_x >= button_blc_x and mouse_x <= button_blc_x + button_w:
-            if mouse_y >= button_blc_y - 2 and mouse_y <= button_blc_y - 2 + button_h:
+            if mouse_y >= button_blc_y - 2 and mouse_y <= button_blc_y - 2 + button_h: 
                return False # return False to indicate that the game should be returned to the main menu
 
 # Function for displaying the stop game screen
@@ -361,7 +361,7 @@ def stop_screen(grid_h, game_w, current_score):
    stddraw.picture(image_to_display, img_center_x, img_center_y)
    # dimensions of the start game button
    button_w, button_h = game_w - 6, 1.5
-   # coordinates of the bottom left corner of the start game button
+   # coordinates of the bottom left corner of the start game button 
    button_blc_x, button_blc_y = img_center_x - button_w / 2, 2.75
    # display game over text
    stddraw.setPenColor(button_color)
@@ -388,12 +388,12 @@ def stop_screen(grid_h, game_w, current_score):
       stddraw.show(50)
       # check if the mouse has been left-clicked on the button
       if stddraw.mousePressed():
-         # get the x and y coordinates of the location at which the mouse has
-         # most recently been left-clicked
+         # get the x and y coordinates of the location at which the mouse has 
+         # most recently been left-clicked  
          mouse_x, mouse_y = stddraw.mouseX(), stddraw.mouseY()
          # check if these coordinates are inside the button
          if mouse_x >= button_blc_x and mouse_x <= button_blc_x + button_w:
-            if mouse_y >= button_blc_y and mouse_y <= button_blc_y + button_h:
+            if mouse_y >= button_blc_y and mouse_y <= button_blc_y + button_h: 
                return True # return True to indicate that the game should be restarted
 
 # Function for save best score
@@ -453,7 +453,7 @@ def read_best_score():
    else:
       return 0
 
-# start() function is specified as the entry point (main function) from which
+# start() function is specified as the entry point (main function) from which 
 # the program starts execution
 if __name__== '__main__':
    start()
